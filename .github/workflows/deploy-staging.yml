@@ -52,12 +52,13 @@ jobs:
         env:
           MONGO_URI: mongodb://localhost:27017/todo_app
 
-      - name: Deploy backend
+      - name: Validate deploy hook URL
         env:
           STAGING_DEPLOY_HOOK_URL: ${{ secrets.STAGING_DEPLOY_HOOK_URL }}
         run: |
-          if [ -z "$STAGING_DEPLOY_HOOK_URL" ]; then
-            echo "Set STAGING_DEPLOY_HOOK_URL in GitHub Environment secrets."
-            exit 1
-          fi
-          curl -X POST "$STAGING_DEPLOY_HOOK_URL"
+          python3 - <<'PY'
+          import os, re, sys
+          url = os.environ.get("STAGING_DEPLOY_HOOK_URL","")
+          print("URL length:", len(url))
+          if not url.startswith("http"):
+              print("ERROR: URL must start with http:// or https://")
