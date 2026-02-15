@@ -7,7 +7,7 @@ const config = {
     url: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/todo_app",
     options: {}
   },
-  migrationsDir: "database/migrations",
+  migrationsDir: "../database/migrations",
   changelogCollectionName: "changelog",
   migrationFileExtension: ".cjs",
   useFileHash: false,
