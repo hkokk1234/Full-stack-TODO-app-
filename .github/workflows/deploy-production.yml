@@ -1,0 +1,43 @@
+name: Deploy Production
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install backend dependencies
+        run: npm ci --prefix backend
+
+      - name: Build backend
+        run: npm --prefix backend run build
+
+      - name: Run DB migrations
+        env:
+          MONGO_URI: ${{ secrets.PROD_MONGO_URI }}
+        run: npm --prefix backend run migrate:up
+
+      - name: Deploy backend
+        env:
+          PROD_DEPLOY_HOOK_URL: ${{ secrets.PROD_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$PROD_DEPLOY_HOOK_URL" ]; then
+            echo "Set PROD_DEPLOY_HOOK_URL in GitHub Environment secrets."
+            exit 1
+          fi
+          curl -fsSL -X POST "$PROD_DEPLOY_HOOK_URL"
+

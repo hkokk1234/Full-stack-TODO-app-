@@ -1,0 +1,18 @@
+{
+  "name": "project1",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck",
+    "test": "npm --prefix backend run test",
+    "test:unit": "npm --prefix backend run test:unit",
+    "test:integration": "npm --prefix backend run test:integration",
+    "test:e2e": "npm --prefix backend run test:e2e",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "docker:up": "docker compose up --build -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f"
+  }
+}
